@@ -46,12 +46,16 @@ function wpapl_get_uri() {
 	$current_url = $temp_url[0];
 	$temp_url = explode( "&reasearch_area_id", $current_url ); 
 	$current_url = $temp_url[0];
+	$temp_url = explode( "&pub_cat", $current_url ); 
+	$current_url = $temp_url[0];
+	$temp_url = explode( "&pub_id", $current_url ); 
+	$current_url = $temp_url[0];
 	
 		
 	return $current_url;
 }
 
-// Get category URI
+// Get people category URI
 function wpapl_get_people_category_uri( $categoryID ) {
 	$current_url = wpapl_get_uri();
 	
@@ -60,12 +64,31 @@ function wpapl_get_people_category_uri( $categoryID ) {
 	return $category_uri;
 }
 
+// Get publications category URI
+function wpapl_get_publication_category_uri( $category_name ) {
+	$current_url = wpapl_get_uri();
+	
+	// using URL encode because someitimes the category name more than one word
+	$category_uri = $current_url . '&pub_type=' . urlencode($category_name);
+	
+	return $category_uri;
+}
+
+// Get certain publication URI
+function wpapl_get_publication_uri( $pub_id ) {
+	$current_url = wpapl_get_uri();
+	
+	$publicaiton_uri = $current_url . '&pub_id=' . $pub_id;
+	
+	return $publicaiton_uri;
+}
+
 // Get project URI
 function wpapl_get_project_uri( $projectID ) {
 	$current_url = wpapl_get_uri();
 	
 	$project_uri = $current_url . '&project_id=' . $projectID;
-	
+
 	return $project_uri;
 }
 
@@ -75,7 +98,7 @@ function wpapl_get_research_area_uri( $researchAreaID ) {
 	
 	$research_area_uri = $current_url . '&research_area_id=' . $researchAreaID;
 	
-	return $reearch_area_uri;
+	return $research_area_uri;
 }
 
 

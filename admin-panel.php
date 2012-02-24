@@ -21,9 +21,15 @@ function wpapl_administrative_menu() {
 	// add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $function); 
 	add_submenu_page( "top_level_wpa_handle", "Project Administration", "Projects", "manage_options", "wpapl_project_submenu_handle", "wpapl_admin_project_page" );
 	
+	// Add sub-administrative menu to manage publications
+	// add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $function); 
+	add_submenu_page( "top_level_wpa_handle", "Publication Administration", "Publications", "manage_options", "wpapl_publication_submenu_handle", "wpapl_admin_publication_page" );	
+	
 	// Add the ability for users to edit their own academic profile
 	// add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $function);
 	add_submenu_page('profile.php', "Academic Information","Academic Information", 0, "wpapl-user-academic-profile", 'wpapl_user_profile_page');
+	
+	
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -665,10 +671,16 @@ function wpapl_admin_project_page() {
 	// If POST for adding project
 	if( isset( $_POST['type']) && $_POST['type'] == 'add_project' ) {
 		// Adding to the database
-		$wpdb->insert( $wpapl_project_table_name, array( 'title' => $_POST["project_title"], 'description' => $_POST['description'], 'abstract' => $_POST['abstract'], 'researchAreaID' => $_POST['research_area_id'] ) );
-		?>
-		<div class="updated"><p><strong>Project <?php echo $_POST['project_title']; ?> has been added to the database.</strong></p></div>
-		<?php
+		$rseult = $wpdb->insert( $wpapl_project_table_name, array( 'title' => $_POST["project_title"], 'description' => $_POST['description'], 'abstract' => $_POST['abstract'], 'researchAreaID' => $_POST['research_area_id'] ) );
+		if( $result ) {
+			?>
+			<div class="updated"><p><strong>Project <?php echo $_POST['project_title']; ?> has been added to the database.</strong></p></div>
+			<?php
+		} else {
+				?>
+				<div class="error"><p>Unable to add the project.</p></div>
+				<?php
+		}
 	}
 	
 	// If POST for editing or deleting a research area
@@ -787,6 +799,225 @@ function wpapl_admin_project_page() {
     
 	<?php
 		
+	echo '</div>';
+}
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Publications administrative page                                                                           //
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+function wpapl_admin_publication_page() {
+	global $wpdb, $wpapl_publication_table_name, $wpapl_publication_people_table_name, $wpapl_people_table_name;
+	
+	// Check if user has the required capability
+	if(!current_user_can( 'manage_options' ))
+	{
+		wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
+	}
+
+	// Fetch all publications
+	$all_publications = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpapl_publication_table_name ORDER BY %s ASC", "title" ) ); 
+	
+	echo '<div class="wrap wpa">';
+	
+	// If POST for adding publication
+	if( isset( $_POST['type']) && $_POST['type'] == 'add_publication' ) {
+		// Adding to the database
+		$result = $wpdb->insert( $wpapl_publication_table_name, array( 'title' => $_POST["publication_title"], 'other_authors' => $_POST['other_authors'], 'publish_year' => $_POST['publish_year'], 'type' => $_POST['pub_type']
+																	, 'type_text' => $_POST['type_text'], 'pdf_url' => $_POST['pdf_url']) );
+		if( $result ) {
+			?>
+			<div class="updated"><p><strong>Publication <?php echo $_POST['publication_title']; ?> has been added to the database.</strong></p></div>
+			<?php
+		} else {
+				?>
+				<div class="error"><p>Unable to add the publication.</p></div>
+				<?php
+		}
+	}
+	
+	// If POST for editing or deleting a publication
+	if( isset( $_POST['type']) && $_POST['type'] == 'edit_delete' ) {
+		// If delete
+		if( isset( $_POST['submit_button']) && $_POST['submit_button'] == 'Delete' )
+		{
+			// Perform deletion on the database
+			$result = $wpdb->query( $wpdb->prepare( "DELETE FROM $wpapl_publication_table_name WHERE publicationID = %d", $_POST['publicationID'] ) );
+			$wpdb->query( $wpdb->prepare( "DELETE FROM $wpapl_publication_people_table_name WHERE publicationID = %d", $_POST['publicationID'] ) );
+			if($result) {
+				?>
+                <div class="updated"><p><strong>Publication has been deleted.</strong></p></div>
+                <?php
+			} else {
+				?>
+                <div class="error"><p>Unable to delete the publication.</p></div>
+                <?php
+			}
+		}
+		// If edit
+		else if(isset( $_POST['submit_button']) && $_POST['submit_button'] == 'Edit') {
+			// Get category information from database
+			$publication = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $wpapl_publication_table_name WHERE publicationID = %d", $_POST['publicationID'] ) );
+			?><br /><h4>Edit Publication</h4><?php
+			?>
+            <form name="add_publication_form" method="post" action="">
+                <ul>
+                    <li><label for="publication_title">Title: </label>
+                    <input id="publication_title" type="text" size="60" name="publication_title" value="<?php echo $publication->title; ?>" /></li>
+                    <li><label for="publish_year">Publishing year: </label>
+                    <input id="publish_year" type="text" size="4" name="publish_year" value="<?php echo $publication->publish_year; ?>" />e.g. 2010</li>  
+                    <li><label for="other_authors">Other authors: </label>
+                    <input id="other_authors" type="text" size="60" name="other_authors" value="<?php echo $publication->other_authors; ?>" /></li>   
+                    <li><label for="pdf_url">PDF location: </label>
+                    <input id="pdf_url" type="text" size="60" name="pdf_url" value="<? echo $publication->pdf_url; ?>" /></li>                 
+                    <li><label for="pub_type">Publication Type: </label>
+                    <select id="pub_type" name="pub_type">
+                        <option value="journal" <?php if( $publication->type == 'journal' ) echo 'selected'; ?> >Journal</option>
+                        <option value="conference" <?php if( $publication->type == 'conference' ) echo 'selected'; ?> >Conference</option>
+                        <option value="thesis" <?php if( $publication->type == 'thesis' ) echo 'selected'; ?> >Thesis</option>
+                    </select></li>                               
+                    <li><label for="type_text">Description: </label>
+                    <textarea id="type_text" name="type_text" cols="60" rows="8"><?php echo $publication->type_text; ?></textarea></li> 
+                    <li><input type="hidden" name="type" value="submit_edit"  /></li>
+                    <li><input type="hidden" name="publicationID" value="<?php echo $_POST['publicationID']; ?>"  /></li>
+                    <li><input type="submit" name="submit_button" value="Add" class="button-secondary" /></li>
+                </ul>
+            </form> 
+            <?php
+		}
+	}
+	
+	// If POST for submitting an edition
+	if( isset( $_POST['type'] ) && $_POST['type'] == 'submit_edit' ) {
+		$result = $wpdb->query( $wpdb->prepare( "UPDATE $wpapl_publication_table_name SET title = %s, publish_year = %s, other_author = %s, type = %s, type_text = %s, pdf_url = %s WHERE publicationID = %d", $_POST['publication_title'], $_POST['publish_year'], $_POST['other_author'], $_POST['pdf_url'], $_POST['pub_type'], $_POST['type_text'], $_POST['pdf_url'], $_POST['publicationID'] ) );
+		if($result) {
+			?>
+			<div class="updated"><p>Publication <?php echo $_POST['publication_title']; ?> has been modified.</p></div>
+			<?php
+		} else {
+			?>
+			<div class="error"><p>Unable to edit the publication.</p></div>
+            <?php
+		}		
+	}
+
+	// If POST for assigning a user to a publication
+	if( isset( $_POST['type']) && $_POST['type'] == 'assign_publication' ) {
+		
+		// first make sure that entry does not exists 
+		$temp_result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpapl_people_publication_table_name WHERE userID = %d, publicationID = %d", $_POST['userID'], $_POST['publicationID'] ) ) ;
+		if( !$temp_result ) {	
+			
+			$result = $wpdb->insert( $wpapl_publication_people_table_name, array( 'userID' => $_POST['userID'], 'publicationID' => $_POST['publicationID'] ) );
+			
+			if($result) {
+				?>
+				<div class="updated"><p>The user has been assigned.</p></div>
+				<?php
+			} else {
+				?>
+				<div class="error"><p>Unable to assign the user.</p></div>
+				<?php
+			}
+		}
+		else {
+			?>
+			<div class="error"><p>That assignment already exist.</p></div>
+			<?php			
+		}
+	}
+
+	// Fetch all publication (again incase any update happened)
+	$all_publications = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpapl_publication_table_name ORDER BY %s ASC", "title" ) ); 
+
+	// ------------------------------------------+
+	// Form to edit or delete a publication      |
+	// ------------------------------------------+
+	
+	?><br /><h4>Edit or Delete a Publication</h4><?php
+	// Form for selecting user
+	?><form name="edit_delete_publication_form" method="post" action=""> <?php
+    	?><ul><?php
+			?><li><label for="publicationID">Title: </label><?php
+            ?><select id="publicationID" name="publicationID"><?php
+			// We got all the IDs, now loop through them to get individual IDs
+			foreach ( $all_publications as $publication ) {
+				?><option value="<?php echo $publication->publicationID; ?>"><?php echo $publication->title; ?></option><?php
+			}
+			?></select></li>
+            <li><input type="hidden" name="type" value="edit_delete"  /></li>
+			<li><input type="submit" name="submit_button" value="Edit" class="button-secondary" /></li>
+			<li><input type="submit" name="submit_button" value="Delete" class="button-secondary" /></li><?php
+    	?></ul><?php
+	?></form><br /><?php
+	
+	// ------------------------------------------+
+	// Form to add new publication                   |
+	// ------------------------------------------+
+	
+	?><h4>Add New Publication</h4><?php
+	// Form for adding new publication
+	?>
+	<form name="add_publication_form" method="post" action="">
+		<ul>
+			<li><label for="publication_title">Title: </label>
+			<input id="publication_title" type="text" size="60" name="publication_title" /></li>
+			<li><label for="publish_year">Publishing year: </label>
+			<input id="publish_year" type="text" size="4" name="publish_year" />e.g. 2010</li>  
+			<li><label for="other_authors">Other authors: </label>
+			<input id="other_authors" type="text" size="60" name="other_authors" /></li>   
+			<li><label for="pdf_url">PDF location: </label>
+			<input id="pdf_url" type="text" size="60" name="pdf_url" /></li>                 
+			<li><label for="pub_type">Publication Type: </label>
+            <select id="pub_type" name="pub_type">
+				<option value="journal">Journal</option>
+				<option value="conference">Conference</option>
+				<option value="thesis">Thesis</option>
+			</select></li>                               
+           	<li><label for="type_text">Description: </label>
+			<textarea id="type_text" name="type_text" cols="60" rows="8">For journal, write journal name. For conference, write the conference name, year &amp; location. For thesis, write the abstract.</textarea></li> 
+            <li><input type="hidden" name="type" value="add_publication"  /></li>
+        	<li><input type="submit" name="submit_button" value="Add" class="button-secondary" /></li>
+        </ul>
+    </form>
+    
+	<?php
+	// -------------------------------------------+
+	// Assign a user to a publication             |
+	// -------------------------------------------+
+	$all_users_id = $wpdb->get_col( $wpdb->prepare( "SELECT $wpdb->users.ID FROM $wpdb->users ORDER BY %s ASC", "display_name" ) );	
+	?><br /><h4>Assign a User to a Publication</h4><?php
+	// Form for selecting user and assigning it to a publication
+	?><form name="user_to_publication_form" method="post" action=""> <?php
+    	?><ul><?php
+			?><li><label for="userID">Select user: </label><?php
+            ?><select id="userID" name="userID"><?php
+			// We got all the IDs, now loop through them to get individual IDs
+			foreach ( $all_users_id as $i_users_id ) {
+				if( $wpdb->get_var( $wpdb->prepare( "SELECT * FROM $wpapl_people_table_name WHERE userID = %d", $i_users_id ) ) ) {
+					$user = wpapl_get_academic_user_info( $i_users_id );
+					?><option value="<?php echo $i_users_id; ?>"><?php echo $user->nickname . ': '. $user->full_name; ?></option><?php
+				}
+			}
+			?></select></li>
+			<li><label for="publicationID">Select publication: </label><?php
+            ?><select id="publicationID" name="publicationID"><?php
+			// Print all projects
+			foreach ( $all_publications as $publication ) {
+				?><option value="<?php echo $publication->publicationID; ?>"><?php echo $publication->title; ?></option><?php
+			}
+			
+			?></select></li>            
+            <li><input type="hidden" name="type" value="assign_publication"  /></li><?php
+			?><li><input type="submit" value="Assign" class="button-secondary" /></li><?php
+			?></select><?php
+    	?></ul><?php
+	?></form><?php  
+	
+	
 	echo '</div>';
 }
 

@@ -3,14 +3,23 @@ Contributors: Saleh_Coder, SalehCoder
 Donate link: 
 Tags: people, list, academic, alumni, research, university, college, school, plugin, wordpress, academic profile, profile, users
 Requires at least: 3.0
-Tested up to: 3.0
-Stable tag: 0.2.0
+Tested up to: 3.0.1
+Stable tag: 0.3.0
 
 Provides the ability to profile users academically and create categories of academic people. You can also show Academic people list using shortcode.
 
 == Description ==
 
 With this plugin you can now use WordPress effectively for a research group website or alumni website by associating additional academic information to selected users. 
+
+** Features **
+
+*	Upgrade and downgrade a user to academic user.
+*	View list of users with profile pictures and academic information.
+*	Categorize your users.
+*	Add and remove projects and categorize them into research areas.
+*	Add publications and categorize them.
+
 
 You can create categories of academic people. For example, your research group has a group for 'social network research' and another group for 'A.I. neurological research', and you want to list people working on each group separately. That's now possible with this plugin.
 
@@ -28,6 +37,7 @@ Users can attach all of the following details to their accounts:
 *	Academic biography
 *	Address
 
+
 Admin will have to explicitly select users and upgrade them to academic users. Those users will be able to edit their academic profiles accordingly by accessing the 'wp-admin/' directory.
 
 To show academic users you will have to use '[academic-people-list]' shortcode in any page or post. Optionally, you can specify the 'category' and 'show_cat' attributes. Here is how to use it:
@@ -38,8 +48,9 @@ To show academic users you will have to use '[academic-people-list]' shortcode i
 
 You can also use the follow shortcodes:
 
-*	[academic-research-areas]: To view list of research areas. This is used for research groups.
-*	[academic-projects]: To view list of projects.
+*	[academic-research-areas]: To view list of research areas. This is used for research groups. 
+*	[academic-projects]: To view list of projects. You can use the 'research_area' attribute here to list all projects under that particular research area. e.g. [academic-research-areas research_area='research area 1']
+*	[academic-publication]: view list of publications. The 'type' attribute is available for viewing certain type of publications.
 
 For profile pictures to work correctly, you'll have to use the [User Photo plugin](http://wordpress.org/extend/plugins/user-photo/ "User Photo plugin"). 
 
@@ -59,32 +70,38 @@ Alternatively, you can easily go to plugins on the admin panel and add the plugi
 == Changelog ==
 
 = 0.1.1 =
-Fixed issue with viewing images.
-
-Added detailed page for each individual.
+*Fixed issue with viewing images.
+*Added detailed page for each individual.
 
 = 0.1.2 =
-Fixed an issue where user was unable to edit his/her academic profile.
+* Fixed an issue where user was unable to edit his/her academic profile.
 
 = 0.1.3 =
-Fixed an issue where a user photo was not appearing.
+* Fixed an issue where a user photo was not appearing.
 
 = 0.2.0 =
-Introduced Projects and Research Areas functionality.
+* Introduced Projects and Research Areas functionality.
+
+= 0.3.0 =
+* Introduced Publications functionality.
+* Done some fixing here and there.
 
 == Upgrade Notice ==
 
 = 0.1.1 =
-Fixed various issues.
+* Fixed various issues.
 
 = 0.1.2 =
-Fixed an issue where user was unable to edit his/her academic profile. UPGRADE IMMEDIATELY!
+* Fixed an issue where user was unable to edit his/her academic profile. UPGRADE IMMEDIATELY!
 
 = 0.1.3 =
-Fixed an issue where a user photo was not appearing. UPGRADE IMMEDIATELY!
+* Fixed an issue where a user photo was not appearing. UPGRADE IMMEDIATELY!
 
 = 0.2.0 =
-Added the ability to add projects and research areas. You can assign users to projects.
+* Added the ability to add projects and research areas. You can assign users to projects.
+
+= 0.3.0 =
+* Now you can add publications like journals and conference papers.
 
 
 

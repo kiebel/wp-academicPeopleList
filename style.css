@@ -12,14 +12,6 @@
 	float: left;
 	padding-right: 5px;
 }
-.wpapl-person .wpapl-mininum-information {
-	
-}
-
-#wpapl-category-list-navmenu {
-	
-}
-
 
 #wpapl-category-list-navmenu ul {
 	list-style-type:none; 
@@ -28,9 +20,11 @@
 	border-bottom:1px solid #E0E0E0;
 	margin:10px 0;
  }
+ 
 #wpapl-category-list-navmenu li {
 	display: inline;
 	margin:0 10px; 
+	text-transform:capitalize;
 }
 
 .wpapl-people-detail-tag {
@@ -41,4 +35,18 @@
 	font-weight: bold;	
 }
 
-	
+.wpapl-project-minititle, .wpapl-publication-minititle {
+	letter-spacing: 1ex;
+	font-size: 1em;
+	position: relative;
+	top: 1.5em;
+	font-variant: small-caps;
+}
+
+#wpapl-publications-list-top h3, #wpapl-people-list-top h3  {
+		font-variant: small-caps;
+}
+
+.wpapl-publication-detail h4 {
+	text-transform: capitalize;
+}

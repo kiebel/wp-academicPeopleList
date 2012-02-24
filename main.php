@@ -3,7 +3,7 @@
 Plugin Name: WP Academic People List
 Plugin URI: http://salehalsaffar.com/blog/?page_id=834 
 Description: Provides the ability to profile users academically and create categories of academic people. You also show Academic people list using shortcode. This is useful for school alumni and research group website.
-Version: 0.2.0
+Version: 0.3.0
 Author: Saleh N. Alsaffar
 Author URI: http://salehalsaffar.com/
 License: GPL2
@@ -40,6 +40,10 @@ global $wpapl_research_area_table_name;
 $wpapl_research_area_table_name = $wpdb->prefix . $wpapl_prefix . "_research_area";
 global $wpapl_people_project_table_name;
 $wpapl_people_project_table_name = $wpdb->prefix . $wpapl_prefix . "_people_project";
+global $wpapl_publication_table_name;
+$wpapl_publication_table_name = $wpdb->prefix . $wpapl_prefix . "_publication";
+global $wpapl_publication_people_table_name;
+$wpapl_publication_people_table_name = $wpdb->prefix . $wpapl_prefix . "_publication_people";
 
 // Include the CSS file to the plugin
 function admin_register_head() {
@@ -51,6 +55,7 @@ add_action('admin_head', 'admin_register_head');
 
 // Includes functions file
 require_once('functions.php');	
+
 // Load CSS
 wp_enqueue_style( 'wpapl-style', get_option('siteurl') . '/wp-content/plugins/' . basename(dirname(__FILE__)) . '/style.css', false, false, 'all' );
 
@@ -58,6 +63,7 @@ wp_enqueue_style( 'wpapl-style', get_option('siteurl') . '/wp-content/plugins/' 
 function wpapl_install() {
 	global $wpdb, $wpapl_prefix, $wpapl_people_table_name, $wpapl_category_table_name;
 	global $wpapl_project_table_name, $wpapl_research_area_table_name, $wpapl_people_project_table_name;
+	global $wpapl_publication_table_name, $wpapl_publication_people_table_name;
 	
 	// Check if the people table already exists
 	if( $wpdb->get_var( "SHOW TABLES LIKE '$wpapl_people_table_name' ") != $wpapl_people_table_name ){ 
@@ -146,7 +152,39 @@ function wpapl_install() {
 		
 		// Execute query to create table
 		$wpdb->query( $wpdb->escape( $sql5 ) );
-	}	
+	}
+	
+	// Check if the publication table already exists	
+	if( $wpdb->get_var( "SHOW TABLES LIKE '$wpapl_publication_table_name' " ) != $wpapl_publication_table_name ){ 
+		
+		// SQL statement for publication table
+		$sql6 = "CREATE TABLE " . $wpapl_publication_table_name . " (  
+			publicationID int NOT NULL AUTO_INCREMENT,
+			title text,
+			other_authors text,
+			publish_year tinytext,
+			type tinytext,
+			type_text text,
+			pdf_url text,
+			UNIQUE KEY publicationID (publicationID)
+			);";
+		
+		// Execute query to create table
+		$wpdb->query( $wpdb->escape( $sql6 ) );
+	}
+	
+	// Check if the publication_people table already exists	
+	if( $wpdb->get_var( "SHOW TABLES LIKE '$wpapl_publication_people_table_name' " ) != $wpapl_publication_people_table_name ){ 
+		
+		// SQL statement for publication_people table
+		$sql7 = "CREATE TABLE " . $wpapl_publication_people_table_name . " (  
+			userID int NOT NULL,
+			publicationID int NOT NULL
+			);";
+		
+		// Execute query to create table
+		$wpdb->query( $wpdb->escape( $sql7 ) );
+	}
 	
 	// Register plugin version
 	global $wpapl_plugin_version;
@@ -167,6 +205,7 @@ require_once('shortcode.php');
 add_shortcode("academic-people-list", 'wpapl_shortcode_academic_people_list');
 add_shortcode("academic-research-areas", 'wpapl_shortcode_academic_reasearch_areas');
 add_shortcode("academic-projects", 'wpapl_shortcode_academic_projects');
+add_shortcode("academic-publications", 'wpapl_shortcode_academic_publications');
 
 
 

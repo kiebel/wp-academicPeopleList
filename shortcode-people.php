@@ -104,7 +104,7 @@ function wpapl_people_list_html( $users ) {
 function wpapl_people_list_single_user_html( $userID ) {
 	$user = wpapl_get_academic_user_info( $userID );
 	$siteurl = get_option('siteurl');
-	$default_image = $siteurl . '/wp-content/plugins/' . basename(dirname(__FILE__)) . '/images/no-pic.jpg';
+	$photo = wpapl_get_user_photo_uri( $userID );
 	
 	
 	

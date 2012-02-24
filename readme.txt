@@ -4,7 +4,7 @@ Donate link:
 Tags: people, list, academic, alumni, research, university, college, school, plugin, wordpress, academic profile, profile, users
 Requires at least: 3.0
 Tested up to: 3.0.1
-Stable tag: 0.3.0
+Stable tag: 0.3.1
 
 Provides the ability to profile users academically and create categories of academic people. You can also show Academic people list using shortcode.
 
@@ -50,7 +50,7 @@ You can also use the follow shortcodes:
 
 *	[academic-research-areas]: To view list of research areas. This is used for research groups. 
 *	[academic-projects]: To view list of projects. You can use the 'research_area' attribute here to list all projects under that particular research area. e.g. [academic-research-areas research_area='research area 1']
-*	[academic-publication]: view list of publications. The 'type' attribute is available for viewing certain type of publications.
+*	[academic-publications]: view list of publications. The 'type' attribute is available for viewing certain type of publications.
 
 For profile pictures to work correctly, you'll have to use the [User Photo plugin](http://wordpress.org/extend/plugins/user-photo/ "User Photo plugin"). 
 
@@ -86,6 +86,9 @@ Alternatively, you can easily go to plugins on the admin panel and add the plugi
 * Introduced Publications functionality.
 * Done some fixing here and there.
 
+= 0.3.1 =
+* Minor change to fix issue with profile picture not showing.
+
 == Upgrade Notice ==
 
 = 0.1.1 =
@@ -102,6 +105,9 @@ Alternatively, you can easily go to plugins on the admin panel and add the plugi
 
 = 0.3.0 =
 * Now you can add publications like journals and conference papers.
+
+= 0.3.1 =
+* Compulsory update to fix issue with picture profile not showing.
 
 
 

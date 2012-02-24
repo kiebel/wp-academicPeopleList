@@ -4,22 +4,22 @@ add_action( 'admin_menu', 'wpapl_administrative_menu' );
 
 // Administrative menu
 function wpapl_administrative_menu() {
-	/*
-	// Add top administrative menu to manage categories
-	// add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $function, $icon_url, $position );
-	add_menu_page( "WordPress Academic", "Academic", "manage_options", "top_level_wpa_handle", "wpapl_admin_people_category_page" );
-	
-	// Add sub-administrative menu to manage people list
-	// add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $function); 
-	add_submenu_page( "top_level_wpa_handle", "People List Administration", "People List", "manage_options", "wpapl_submenu_handle", "wpapl_admin_people_page" );
-	*/
+
 	// Add top administrative menu to manage academic people
 	// add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $function, $icon_url, $position );
 	add_menu_page( "WordPress Academic", "Academic People", "manage_options", "top_level_wpa_handle", "wpapl_admin_people_page" );
 	
 	// Add sub-administrative menu to manage categories
 	// add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $function); 
-	add_submenu_page( "top_level_wpa_handle", "Academic People Categories Administration", "Categories", "manage_options", "wpapl_submenu_handle", "wpapl_admin_people_category_page" );
+	add_submenu_page( "top_level_wpa_handle", "Academic People Categories Administration", "People Categories", "manage_options", "wpapl_categories_submenu_handle", "wpapl_admin_people_category_page" );
+	
+	// Add sub-administrative menu to manage research area
+	// add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $function); 
+	add_submenu_page( "top_level_wpa_handle", "Research Area Administration", "Research Areas", "manage_options", "wpapl_reseach_area_submenu_handle", "wpapl_admin_research_area_page" );
+
+	// Add sub-administrative menu to manage project
+	// add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $function); 
+	add_submenu_page( "top_level_wpa_handle", "Project Administration", "Projects", "manage_options", "wpapl_project_submenu_handle", "wpapl_admin_project_page" );
 	
 	// Add the ability for users to edit their own academic profile
 	// add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $function);
@@ -69,11 +69,12 @@ function wpapl_admin_people_category_page() {
                 <?php
 			}
 		}
+		
 		// If edit
 		else if(isset( $_POST['submit_button']) && $_POST['submit_button'] == 'Edit') {
 			// Get category information from database
 			$category = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $wpapl_category_table_name WHERE categoryID = %d", $_POST['category'] ) );
-			?><h3>Edit Category</h3><?php
+			?><br /><h4>Edit Category</h4><?php
 			?>
 			<form name="edit_category" method="post" action="">
 				<ul>
@@ -97,9 +98,10 @@ function wpapl_admin_people_category_page() {
 		} else {
 			?>
 			<div class="error"><p>Unable to edit the category.</p></div>
-			<?php echo $wpdb->last_query;
+			<?php
 		}		
 	}
+
 
 
 	// Fetch all people categories (again incase any update happened)
@@ -109,7 +111,7 @@ function wpapl_admin_people_category_page() {
 	// Form to edit or delete people categories  |
 	// ------------------------------------------+
 	
-	?><h4>Edit or Delete A Category</h4><?php
+	?><br /><h4>Edit or Delete a Category</h4><?php
 	// Form for selecting user
 	?><form name="form1" method="post" action=""> <?php
     	?><ul><?php
@@ -129,7 +131,7 @@ function wpapl_admin_people_category_page() {
 	// Form to add new category                  |
 	// ------------------------------------------+
 	
-	?><h4>Add New Category</h4><?php
+	?><br /><h4>Add New Category</h4><?php
 	// Form for selecting user
 	?>
 	<form name="edit_user" method="post" action="">
@@ -150,7 +152,7 @@ function wpapl_admin_people_category_page() {
 // People List administrative page                                                                       //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function wpapl_admin_people_page() {
-	global $wpapl_people_table_name, $wpdb, $wpapl_category_table_name;
+	global $wpapl_people_table_name, $wpdb, $wpapl_category_table_name, $wpapl_project_table_name, $wpapl_people_project_table_name;
 	
 	// Check if user has the required capability
 	if(!current_user_can( 'manage_options' ))
@@ -185,7 +187,7 @@ function wpapl_admin_people_page() {
 		// Fetch WP's user information
 		$user = get_userdata( $_POST['userID'] );
 									 
-		?><h3>Edit User Information</h3><?php
+		?><br /><h4>Edit User Information</h4><?php
 		?>
         <form name="edit_user" method="post" action="">
         	<ul>
@@ -259,7 +261,33 @@ function wpapl_admin_people_page() {
 			<div class="error"><p>Unable to commit user academic profile.</p></div>
 			<?php
 		}
-	}	
+	}
+
+	// If POST for assigning a user to a project
+	if( isset( $_POST['type']) && $_POST['type'] == 'assign_project' ) {
+		
+		// first make sure that entry does not exists 
+		$temp_result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpapl_people_project_table_name WHERE userID = %d, projectID = %d", $_POST['userID'], $_POST['projectID'] ) ) ;
+		if( !$temp_result ) {	
+			
+			$result = $wpdb->insert( $wpapl_people_project_table_name, array( 'userID' => $_POST['userID'], 'projectID' => $_POST['projectID'] ) );
+			
+			if($result) {
+				?>
+				<div class="updated"><p>The user has been assigned.</p></div>
+				<?php
+			} else {
+				?>
+				<div class="error"><p>Unable to assign the user.</p></div>
+				<?php
+			}
+		}
+		else {
+			?>
+			<div class="error"><p>That assignment already exist.</p></div>
+			<?php			
+		}
+	}
 	
 	// If POST for downgrading a user
 	if( isset( $_POST['type']) && $_POST['type'] == 'downgrade' ) {
@@ -283,7 +311,7 @@ function wpapl_admin_people_page() {
 	$all_users_id = $wpdb->get_col( $wpdb->prepare( "SELECT $wpdb->users.ID FROM $wpdb->users ORDER BY %s ASC", "display_name" ) );
 
 	
-	?><h4>Upgrade A User to Academic</h4><?php
+	?><br /><h4>Upgrade a User to Academic</h4><?php
 	// Form for selecting user
 	?><form name="form1" method="post" action=""> <?php
     	?><ul><?php
@@ -292,8 +320,8 @@ function wpapl_admin_people_page() {
 			// We got all the IDs, now loop through them to get individual IDs
 			foreach ( $all_users_id as $i_users_id ) {
 				if( !$wpdb->get_var( $wpdb->prepare( "SELECT * FROM $wpapl_people_table_name WHERE userID = %d", $i_users_id ) ) ) {
-					$user = get_userdata( $i_users_id );
-					?><option value="<?php echo $i_users_id; ?>"><?php echo $user->nickname; ?></option><?php
+					$user = wpapl_get_academic_user_info( $i_users_id );
+					?><option value="<?php echo $i_users_id; ?>"><?php echo $user->nickname . ': '. $user->full_name; ?></option><?php
 				} 
 			}
 			?></select></li><li><input type="hidden" name="type" value="upgrade"  /></li><?php
@@ -307,7 +335,7 @@ function wpapl_admin_people_page() {
 	// ---------------------------------------+
 	
 	// This will cause his academic profile to be deleted
-	?><h4>Downgrade An Academic User to Normal user</h4><?php
+	?><br /><h4>Downgrade an Academic User to Normal user</h4><?php
 	// Form for selecting user
 	?><form name="form2" method="post" action=""> <?php
     	?><ul><?php
@@ -316,8 +344,8 @@ function wpapl_admin_people_page() {
 			// We got all the IDs, now loop through them to get individual IDs
 			foreach ( $all_users_id as $i_users_id ) {
 				if( $wpdb->get_var( $wpdb->prepare( "SELECT * FROM $wpapl_people_table_name WHERE userID = %d", $i_users_id ) ) ) {
-					$user = get_userdata( $i_users_id );
-					?><option value="<?php echo $i_users_id; ?>"><?php echo $user->nickname; ?></option><?php
+					$user = wpapl_get_academic_user_info( $i_users_id );
+					?><option value="<?php echo $i_users_id; ?>"><?php echo $user->nickname . ': '. $user->full_name; ?></option><?php
 				}
 			}
 			?></select></li><li><input type="hidden" name="type" value="downgrade"  /></li><?php
@@ -331,7 +359,7 @@ function wpapl_admin_people_page() {
 	// Form to edit a user's academic information |
 	// -------------------------------------------+
 	 
-	?><h4>Edit An Academic Profile</h4><?php
+	?><br /><h4>Edit an Academic Profile</h4><?php
 	// Form for selecting user
 	?><form name="form3" method="post" action=""> <?php
     	?><ul><?php
@@ -340,12 +368,47 @@ function wpapl_admin_people_page() {
 			// We got all the IDs, now loop through them to get individual IDs
 			foreach ( $all_users_id as $i_users_id ) {
 				if( $wpdb->get_var( $wpdb->prepare( "SELECT * FROM $wpapl_people_table_name WHERE userID = %d", $i_users_id ) ) ) {
-					$user = get_userdata( $i_users_id );
-					?><option value="<?php echo $i_users_id; ?>"><?php echo $user->nickname; ?></option><?php
+					$user = wpapl_get_academic_user_info( $i_users_id );
+					?><option value="<?php echo $i_users_id; ?>"><?php echo $user->nickname . ': '. $user->full_name; ?></option><?php
 				}
 			}
 			?></select></li><li><input type="hidden" name="type" value="edit"  /></li><?php
 			?><li><input type="submit" value="Edit" class="button-secondary" /></li><?php
+			?></select><?php
+    	?></ul><?php
+	?></form><?php  
+	
+
+	// -------------------------------------------+
+	// Assign a user to a project                 |
+	// -------------------------------------------+
+	 // Fetch all projects 
+	$all_projects = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpapl_project_table_name ORDER BY %s ASC", "title" ) ); 
+
+	?><br /><h4>Assign a User to a Project</h4><?php
+	// Form for selecting user and assigning it to a project
+	?><form name="form3" method="post" action=""> <?php
+    	?><ul><?php
+			?><li><label for="userID">Select user: </label><?php
+            ?><select id="userID" name="userID"><?php
+			// We got all the IDs, now loop through them to get individual IDs
+			foreach ( $all_users_id as $i_users_id ) {
+				if( $wpdb->get_var( $wpdb->prepare( "SELECT * FROM $wpapl_people_table_name WHERE userID = %d", $i_users_id ) ) ) {
+					$user = wpapl_get_academic_user_info( $i_users_id );
+					?><option value="<?php echo $i_users_id; ?>"><?php echo $user->nickname . ': '. $user->full_name; ?></option><?php
+				}
+			}
+			?></select></li>
+			<li><label for="projectID">Select project: </label><?php
+            ?><select id="projectID" name="projectID"><?php
+			// Print all projects
+			foreach ( $all_projects as $project ) {
+				?><option value="<?php echo $project->projectID; ?>"><?php echo $project->title; ?></option><?php
+			}
+			
+			?></select></li>            
+            <li><input type="hidden" name="type" value="assign_project"  /></li><?php
+			?><li><input type="submit" value="Assign" class="button-secondary" /></li><?php
 			?></select><?php
     	?></ul><?php
 	?></form><?php  
@@ -402,7 +465,7 @@ function wpapl_user_profile_page() {
 	// Fetch WP's user information
 	$user = get_userdata( $current_user->ID );
 								 
-	?><h3>Edit Academic Profile</h3><?php
+	?><br /><h4>Edit Academic Profile</h4><?php
 	?>
 	<form name="edit_user" method="post" action="">
 		<ul>
@@ -457,4 +520,273 @@ function wpapl_user_profile_page() {
 	<?php
 }
 
-?>
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Research Area administrative page                                                                     //
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+function wpapl_admin_research_area_page() {
+	global $wpdb, $wpapl_research_area_table_name;
+	
+	// Check if user has the required capability
+	if(!current_user_can( 'manage_options' ))
+	{
+		wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
+	}
+	
+	echo '<div class="wrap wpa">';
+	
+	// If POST for adding research area
+	if( isset( $_POST['type']) && $_POST['type'] == 'add_research_area' ) {
+		// Adding to the database
+		$wpdb->insert( $wpapl_research_area_table_name, array( 'title' => $_POST["research_area_title"], 'description' => $_POST['description'] ) );
+		?>
+		<div class="updated"><p><strong>Category <?php echo $_POST['title']; ?> has been added to the database.</strong></p></div>
+		<?php
+	}
+	
+	// If POST for editing or deleting a research area
+	if( isset( $_POST['type']) && $_POST['type'] == 'edit_delete' ) {
+		// If delete
+		if( isset( $_POST['submit_button']) && $_POST['submit_button'] == 'Delete' )
+		{
+			// Perform deletion on the database
+			$result = $wpdb->query( $wpdb->prepare( "DELETE FROM $wpapl_research_area_table_name WHERE researchAreaID = %d", $_POST['research_area'] ) );
+			if($result) {
+				?>
+                <div class="updated"><p><strong>Research area deleted.</strong></p></div>
+                <?php
+			} else {
+				?>
+                <div class="error"><p>Unable to delete research area.</p></div>
+                <?php
+			}
+		}
+		// If edit
+		else if(isset( $_POST['submit_button']) && $_POST['submit_button'] == 'Edit') {
+			// Get category information from database
+			$research_area = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $wpapl_research_area_table_name WHERE researchAreaID = %d", $_POST['research_area'] ) );
+			?><br /><h4>Edit Research Area</h4><?php
+			?>
+			<form name="edit_research_area" method="post" action="">
+				<ul>
+					<li><label for="research_area_title">Title: </label>
+					<input id="research_area_title" type="text" size="20" maxlength="255" name="research_area_title" value="<?php echo $research_area->title; ?>" /></li>
+                    <li><label for="description">Description: </label>
+                    <textarea id="description" name="description" cols="60" rows="8"><?php echo $research_area->description; ?></textarea></li> 
+                    <li><input type="hidden" name="type" value="submit_edit"  /></li>
+                    <li><input type="hidden" name="researchAreaID" value="<?php echo $research_area->researchAreaID; ?>"  /></li>
+					<li><input type="submit" name="submit_button" value="Submit" class="button-secondary" /></li>
+                </ul>
+			</form> <?php
+		}
+	}
+	
+	// If POST for submitting an edition
+	if( isset( $_POST['type']) && $_POST['type'] == 'submit_edit' ) {
+		$result = $wpdb->query( $wpdb->prepare( "UPDATE $wpapl_research_area_table_name SET title = %s, description = %s WHERE researchAreaID = %d", $_POST['research_area_title'], $_POST['description'], $_POST['researchAreaID'] ) );
+		if($result) {
+			?>
+			<div class="updated"><p>Research area <?php echo $_POST['research_area_title']; ?> has been modified.</p></div>
+			<?php
+		} else {
+			?>
+			<div class="error"><p>Unable to edit the research area.</p></div>
+			<?php
+		}		
+	}
+
+
+	// Fetch all people research areas (again incase any update happened)
+	$all_research_areas = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpapl_research_area_table_name ORDER BY %s ASC", "title" ) ); 
+	
+	// ------------------------------------------+
+	// Form to edit or delete research area      |
+	// ------------------------------------------+
+	
+	?><br /><h4>Edit or Delete a Research Area</h4><?php
+	// Form for selecting user
+	?><form name="edit_delete_research_area_form" method="post" action=""> <?php
+    	?><ul><?php
+			?><li><label for="research_area">Title: </label><?php
+            ?><select id="research_area" name="research_area"><?php
+			// We got all the IDs, now loop through them to get individual IDs
+			foreach ( $all_research_areas as $research_area ) {
+				?><option value="<?php echo $research_area->researchAreaID; ?>"><?php echo $research_area->title; ?></option><?php
+			}
+			?></select></li>
+            <li><input type="hidden" name="type" value="edit_delete"  /></li>
+			<li><input type="submit" name="submit_button" value="Edit" class="button-secondary" /></li>
+			<li><input type="submit" name="submit_button" value="Delete" class="button-secondary" /></li><?php
+    	?></ul><?php
+	?></form><?php
+	
+	// ------------------------------------------+
+	// Form to add new research area             |
+	// ------------------------------------------+
+	
+	?><br /><h4>Add New Research Area</h4><?php
+	// Form for adding new research area
+	?>
+	<form name="add_research_area_form" method="post" action="">
+		<ul>
+			<li><label for="research_area_title">Title: </label>
+			<input id="research_area_title" type="text" size="20" maxlength="255" name="research_area_title" /></li>
+           	<li><label for="description">Description: </label>
+			<textarea id="description" name="description" cols="60" rows="8"></textarea></li> 
+            <li><input type="hidden" name="type" value="add_research_area"  /></li>
+        	<li><input type="submit" name="submit_button" value="Add" class="button-secondary" /></li>
+        </ul>
+    </form>
+	<?php
+	
+	
+	echo '</div>';
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Project administrative page                                                                           //
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+function wpapl_admin_project_page() {
+	global $wpdb, $wpapl_project_table_name, $wpapl_research_area_table_name;
+	
+	// Check if user has the required capability
+	if(!current_user_can( 'manage_options' ))
+	{
+		wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
+	}
+
+	// Fetch all research areas (again incase any update happened)
+	$all_research_areas = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpapl_research_area_table_name ORDER BY %s ASC", "title" ) ); 
+	
+	echo '<div class="wrap wpa">';
+	
+	// If POST for adding project
+	if( isset( $_POST['type']) && $_POST['type'] == 'add_project' ) {
+		// Adding to the database
+		$wpdb->insert( $wpapl_project_table_name, array( 'title' => $_POST["project_title"], 'description' => $_POST['description'], 'abstract' => $_POST['abstract'], 'researchAreaID' => $_POST['research_area_id'] ) );
+		?>
+		<div class="updated"><p><strong>Project <?php echo $_POST['project_title']; ?> has been added to the database.</strong></p></div>
+		<?php
+	}
+	
+	// If POST for editing or deleting a research area
+	if( isset( $_POST['type']) && $_POST['type'] == 'edit_delete' ) {
+		// If delete
+		if( isset( $_POST['submit_button']) && $_POST['submit_button'] == 'Delete' )
+		{
+			// Perform deletion on the database
+			$result = $wpdb->query( $wpdb->prepare( "DELETE FROM $wpapl_project_table_name WHERE projectID = %d", $_POST['projectID'] ) );
+			$wpdb->query( $wpdb->prepare( "DELETE FROM $wpapl_people_project_table_name WHERE projectID = %d", $_POST['projectID'] ) );
+			if($result) {
+				?>
+                <div class="updated"><p><strong>Project has been deleted.</strong></p></div>
+                <?php
+			} else {
+				?>
+                <div class="error"><p>Unable to delete the project.</p></div>
+                <?php
+			}
+		}
+		// If edit
+		else if(isset( $_POST['submit_button']) && $_POST['submit_button'] == 'Edit') {
+			// Get category information from database
+			$project = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $wpapl_project_table_name WHERE projectID = %d", $_POST['projectID'] ) );
+			?><br /><h4>Edit Project</h4><?php
+			?>
+			<form name="edit_project" method="post" action="">
+				<ul>
+					<li><label for="project_title">Title: </label>
+					<input id="project_title" type="text" size="20" maxlength="255" name="project_title" value="<?php echo $project->title; ?>" /></li>
+                    <li><label for="abstract">Abstract: </label>
+                    <textarea id="abstract" name="abstract" cols="60" rows="8"><?php echo $project->abstract; ?></textarea></li> 
+                    <li><label for="description">Description: </label>
+                    <textarea id="description" name="description" cols="60" rows="8"><?php echo $project->description; ?></textarea></li> 
+                    <li><label for="research_area_id">Research Area: </label>
+                    <select id="research_area_id" name="research_area_id"><?php
+                    // Loop through people categories
+                    foreach ( $all_research_areas as $research_area ) {
+                        ?><option value="<?php echo $research_area->researchAreaID; ?>" <?php if( $project->researchAreaID == $research_area->researchAreaID ) echo "selected"; ?>><?php echo $research_area->title; ?></option><?php
+                        
+                    }
+                    ?></select>
+                    <li><input type="hidden" name="type" value="submit_edit"  /></li>
+                    <li><input type="hidden" name="projectID" value="<?php echo $_POST['projectID']; ?>"  /></li>
+					<li><input type="submit" name="submit_button" value="Submit" class="button-secondary" /></li>
+                </ul>
+			</form> <?php
+		}
+	}
+	
+	// If POST for submitting an edition
+	if( isset( $_POST['type']) && $_POST['type'] == 'submit_edit' ) {
+		$result = $wpdb->query( $wpdb->prepare( "UPDATE $wpapl_project_table_name SET title = %s, description = %s, abstract = %s, researchAreaID = %d WHERE projectID = %d", $_POST['project_title'], $_POST['description'], $_POST['abstract'], $_POST['research_area_id'], $_POST['projectID'] ) );
+		if($result) {
+			?>
+			<div class="updated"><p>Project <?php echo $_POST['project_title']; ?> has been modified.</p></div>
+			<?php
+		} else {
+			?>
+			<div class="error"><p>Unable to edit the Project.</p></div>
+            <?php
+		}		
+	}
+
+
+	// Fetch all projects (again incase any update happened)
+	$all_projects = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpapl_project_table_name ORDER BY %s ASC", "title" ) ); 
+
+	// ------------------------------------------+
+	// Form to edit or delete a project          |
+	// ------------------------------------------+
+	
+	?><br /><h4>Edit or Delete Project</h4><?php
+	// Form for selecting user
+	?><form name="edit_delete_project_form" method="post" action=""> <?php
+    	?><ul><?php
+			?><li><label for="projectID">Title: </label><?php
+            ?><select id="projectID" name="projectID"><?php
+			// We got all the IDs, now loop through them to get individual IDs
+			foreach ( $all_projects as $project ) {
+				?><option value="<?php echo $project->projectID; ?>"><?php echo $project->title; ?></option><?php
+			}
+			?></select></li>
+            <li><input type="hidden" name="type" value="edit_delete"  /></li>
+			<li><input type="submit" name="submit_button" value="Edit" class="button-secondary" /></li>
+			<li><input type="submit" name="submit_button" value="Delete" class="button-secondary" /></li><?php
+    	?></ul><?php
+	?></form><br /><?php
+	
+	// ------------------------------------------+
+	// Form to add new project                   |
+	// ------------------------------------------+
+	
+	?><h4>Add New Project</h4><?php
+	// Form for adding new research area
+	?>
+	<form name="add_project_form" method="post" action="">
+		<ul>
+			<li><label for="project_title">Title: </label>
+			<input id="project_title" type="text" size="40" maxlength="255" name="project_title" /></li>
+           	<li><label for="abstract">Abstract: </label>
+			<textarea id="abstract" name="abstract" cols="60" rows="8"></textarea></li> 
+			<li><label for="description">Description: </label>
+			<textarea id="description" name="description" cols="60" rows="8"></textarea></li> 
+            <li><input type="hidden" name="type" value="add_project"  /></li>
+        	<li><input type="submit" name="submit_button" value="Add" class="button-secondary" /></li>
+			<li><label for="research_area_id">Research Area: </label>
+            <select id="research_area_id" name="research_area_id"><?php
+			// We got all the IDs, now loop through them to get individual IDs
+			foreach ( $all_research_areas as $research_area ) {
+				?><option value="<?php echo $research_area->researchAreaID; ?>"><?php echo $research_area->title; ?></option><?php
+			}
+			?></select></li>
+        </ul>
+    </form>
+    
+	<?php
+		
+	echo '</div>';
+}
+

@@ -3,7 +3,7 @@
 Plugin Name: WP Academic People List
 Plugin URI: http://salehalsaffar.com/blog/?page_id=834 
 Description: Provides the ability to profile users academically and create categories of academic people. You also show Academic people list using shortcode. This is useful for school alumni and research group website.
-Version: 0.1.3
+Version: 0.2.0
 Author: Saleh N. Alsaffar
 Author URI: http://salehalsaffar.com/
 License: GPL2
@@ -28,14 +28,14 @@ License: GPL2
 global $wpapl_prefix;
 $wpapl_prefix = "wpapl";
 global $wpapl_plugin_version;
-$wpapl_plugin_version = "0.1";
+$wpapl_plugin_version = "0.1.3";
 global $wpapl_people_table_name;
 global $wpdb;
 $wpapl_people_table_name = $wpdb->prefix . $wpapl_prefix . "_people";
 global $wpapl_category_table_name;
 $wpapl_category_table_name = $wpdb->prefix . $wpapl_prefix . "_category";
 global $wpapl_project_table_name;
-$wpapl_category_project_name = $wpdb->prefix . $wpapl_prefix . "_project";
+$wpapl_project_table_name = $wpdb->prefix . $wpapl_prefix . "_project";
 global $wpapl_research_area_table_name;
 $wpapl_research_area_table_name = $wpdb->prefix . $wpapl_prefix . "_research_area";
 global $wpapl_people_project_table_name;
@@ -109,6 +109,7 @@ function wpapl_install() {
 		// SQL statement for project table
 		$sql3 = "CREATE TABLE " . $wpapl_project_table_name . " (  
 			projectID int NOT NULL AUTO_INCREMENT,
+			title tinytext,
 			abstract text,
 			description text,
 			researchAreaID int NOT NULL,
@@ -125,6 +126,7 @@ function wpapl_install() {
 		// SQL statement for research_area table
 		$sql4 = "CREATE TABLE " . $wpapl_research_area_table_name . " (  
 			researchAreaID int NOT NULL AUTO_INCREMENT,
+			title tinytext,
 			description text,
 			UNIQUE KEY researchAreaID (researchAreaID)
 			);";
@@ -134,12 +136,12 @@ function wpapl_install() {
 	}
 	
 	// Check if the people_project table already exists	
-	if( $wpdb->get_var( "SHOW TABLES LIKE '$wpapl_people_project_table_name' ") != $wpapl_people_project_table_name ){ 
+	if( $wpdb->get_var( "SHOW TABLES LIKE '$wpapl_people_project_table_name' " ) != $wpapl_people_project_table_name ){ 
 		
 		// SQL statement for people_project table
 		$sql5 = "CREATE TABLE " . $wpapl_people_project_table_name . " (  
 			userID int NOT NULL,
-			projectID int NOT NULL,
+			projectID int NOT NULL
 			);";
 		
 		// Execute query to create table
@@ -162,7 +164,9 @@ require_once('admin-panel.php');
 
 // Add shortcode
 require_once('shortcode.php');
-add_shortcode("academic-people-list", 'wpapl_shortcode');
+add_shortcode("academic-people-list", 'wpapl_shortcode_academic_people_list');
+add_shortcode("academic-research-areas", 'wpapl_shortcode_academic_reasearch_areas');
+add_shortcode("academic-projects", 'wpapl_shortcode_academic_projects');
 
 
 

@@ -28,6 +28,7 @@ function wpapl_get_academic_user_info( $userID ) {
 	$user->userphoto_thumb_height = $user_wp_information->userphoto_thumb_height;
 	$user->categoryID = $user_academic_information->categoryID;
 	$user->category_name = $user_category->category_name;
+	$user->full_name = $user->first_name . ' ' . $user->middle_initial . '. ' . $user->last_name;
 	
 	
 	return $user;
@@ -41,18 +42,50 @@ function wpapl_get_uri() {
 	$current_url = $temp_url[0];
 	$temp_url = explode( "&wpapl_id", $current_url );
 	$current_url = $temp_url[0];
+	$temp_url = explode( "&project_id", $current_url ); 
+	$current_url = $temp_url[0];
+	$temp_url = explode( "&reasearch_area_id", $current_url ); 
+	$current_url = $temp_url[0];
 	
 		
 	return $current_url;
 }
 
 // Get category URI
-function wpapl_get_category_uri( $categoryID ) {
+function wpapl_get_people_category_uri( $categoryID ) {
 	$current_url = wpapl_get_uri();
 	
 	$category_uri = $current_url . '&cat=' . $categoryID;
 	
 	return $category_uri;
+}
+
+// Get project URI
+function wpapl_get_project_uri( $projectID ) {
+	$current_url = wpapl_get_uri();
+	
+	$project_uri = $current_url . '&project_id=' . $projectID;
+	
+	return $project_uri;
+}
+
+// Get research area URI
+function wpapl_get_research_area_uri( $researchAreaID ) {
+	$current_url = wpapl_get_uri();
+	
+	$research_area_uri = $current_url . '&research_area_id=' . $researchAreaID;
+	
+	return $reearch_area_uri;
+}
+
+
+// Get user profile URI
+function wpapl_get_user_profile_uri( $userID ) {
+	$current_url = wpapl_get_uri();
+	
+	$user_link = $current_url . "&wpapl_id=" . $userID;
+	
+	return $user_link;
 }
 
 

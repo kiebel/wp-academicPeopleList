@@ -4,7 +4,7 @@ Donate link:
 Tags: people, list, academic, alumni, research, university, college, school, plugin, wordpress, academic profile, profile, users
 Requires at least: 3.0
 Tested up to: 3.0
-Stable tag: 0.1.3
+Stable tag: 0.2.0
 
 Provides the ability to profile users academically and create categories of academic people. You can also show Academic people list using shortcode.
 
@@ -13,6 +13,8 @@ Provides the ability to profile users academically and create categories of acad
 With this plugin you can now use WordPress effectively for a research group website or alumni website by associating additional academic information to selected users. 
 
 You can create categories of academic people. For example, your research group has a group for 'social network research' and another group for 'A.I. neurological research', and you want to list people working on each group separately. That's now possible with this plugin.
+
+You can also categorize your projects into research areas. Like a research area 'Computer Engineering' has the two previously mentioned projects, 'social network research' and 'A.I. neurological research'.
 
 Users can attach all of the following details to their accounts:
 
@@ -34,9 +36,14 @@ To show academic users you will have to use '[academic-people-list]' shortcode i
 *	[academic-people-list category='CATEGORY 1' show_cat='false']: Users from CATEGORY 1 and will not show list of categories
 *	[academic-people-list category='Group A']: Users from Group A and will show list of categories
 
+You can also use the follow shortcodes:
+
+*	[academic-research-areas]: To view list of research areas. This is used for research groups.
+*	[academic-projects]: To view list of projects.
+
 For profile pictures to work correctly, you'll have to use the [User Photo plugin](http://wordpress.org/extend/plugins/user-photo/ "User Photo plugin"). 
 
-This plugin is still under development and many other features are yet to be developed. **Tested with WordPress 3.0**.
+You can request additional features on this [plugin WordPress forum](http://wordpress.org/tags/wp-academic-people?forum_id=10 "plugin WordPress forum").
 
 == Installation ==
 
@@ -53,6 +60,7 @@ Alternatively, you can easily go to plugins on the admin panel and add the plugi
 
 = 0.1.1 =
 Fixed issue with viewing images.
+
 Added detailed page for each individual.
 
 = 0.1.2 =
@@ -60,6 +68,9 @@ Fixed an issue where user was unable to edit his/her academic profile.
 
 = 0.1.3 =
 Fixed an issue where a user photo was not appearing.
+
+= 0.2.0 =
+Introduced Projects and Research Areas functionality.
 
 == Upgrade Notice ==
 
@@ -71,6 +82,10 @@ Fixed an issue where user was unable to edit his/her academic profile. UPGRADE I
 
 = 0.1.3 =
 Fixed an issue where a user photo was not appearing. UPGRADE IMMEDIATELY!
+
+= 0.2.0 =
+Added the ability to add projects and research areas. You can assign users to projects.
+
 
 
 

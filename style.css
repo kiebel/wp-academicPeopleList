@@ -4,6 +4,10 @@
 	margin-right: 1em;  
 }
 
+.wpapl-person {
+	font-size: 1em;	
+}
+
 .wpapl-person .wpapl-image {
 	float: left;
 	padding-right: 5px;

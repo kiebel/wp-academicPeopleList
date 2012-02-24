@@ -29,8 +29,8 @@ function wpapl_get_academic_user_info( $userID ) {
 	$user->categoryID = $user_academic_information->categoryID;
 	$user->category_name = $user_category->category_name;
 	$user->full_name = $user->first_name . ' ';
-	if( ! empty( $user->middle_initial ) ) {
-		$user->full_name .= $user->middle_initial . '. ';
+	if( !empty( $user->middle_initial ) || !$user->middle_initial == "") {
+		$user->full_name .= $user->middle_initial . '-. -';
 	}
 	$user->full_name .= $user->last_name;
 	

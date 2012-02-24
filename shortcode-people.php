@@ -71,7 +71,6 @@ function wpapl_showAcademicDetail( $userID ) {
 	
 	$html .= '
 			</div>
-			<br /><br />
 		</div><br/>
 	';	
 	
@@ -129,7 +128,7 @@ function wpapl_people_list_single_user_html( $userID ) {
 		<div class="wpapl-person">
 			<div class="wpapl-image"><img src="' . $photo->uri . '" width="' . $photo->width . '" height="' . $photo->height . '" /></div>
 			<div class="wpapl-mininum-information">
-			  <h4><span class="wpapl-person-name">' . $user->first_name . ' ' . $user->middle_initial . '. ' . $user->last_name . '</span></h4>
+			  <h4><span class="wpapl-person-name">' . $user->full_name . '</span></h4>
 			  <p><span class="wpapl-people-individual-tag">Job:</span> ' . $user->current_job . '<br />
 				<span class="wpapl-people-individual-tag">Website:</span> ' . makeClickableLinks( $user->url ) . '<br />
 				<span class="wpapl-people-individual-tag">Email:</span> ' . makeClickableLinks( $user->academic_email ) . '</p>

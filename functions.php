@@ -58,12 +58,14 @@ function wpapl_get_category_uri( $categoryID ) {
 
 // Get photo of a certain user
 function wpapl_get_user_photo_uri( $userID ) {
+	// Get user details
+	$user = wpapl_get_academic_user_info( $userID );
 	
 	// URI of the default photo
 	$default_image = $siteurl . '/wp-content/plugins/' . basename(dirname(__FILE__)) . '/images/no-pic.jpg';
 	
 	// Get user photo
-	if( function_exists( 'userphoto_exists' ) && userphoto_exists( $user ) ) {
+	if( function_exists( 'userphoto_exists' ) && userphoto_exists( $userID ) ) {
 			$photo_uri = $user->userphoto_thumb_file;
 			$photo_width = $user->userphoto_thumb_width; 
 			$photo_height = $user->userphoto_thumb_height;

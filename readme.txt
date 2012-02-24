@@ -1,12 +1,12 @@
 === Plugin Name ===
 Contributors: Saleh_Coder, SalehCoder
-Donate link: 
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=YERV9ZMQBF98J
 Tags: people, list, academic, alumni, research, university, college, school, plugin, wordpress, academic profile, profile, users
 Requires at least: 3.0
-Tested up to: 3.0.1
-Stable tag: 0.3.2
+Tested up to: 3.3.1
+Stable tag: 0.4.0
 
-Provides the ability to profile users academically and create categories of academic people. You can also show Academic people list using shortcode.
+Provides the ability to profile users academically and create categories of academic people. View a list of projects, publications, and research areas and who's involved. This is useful for school alumni and research group websites. 
 
 == Description ==
 
@@ -92,6 +92,9 @@ Alternatively, you can easily go to plugins on the admin panel and add the plugi
 = 0.3.2 =
 * Minor improvements here and there.
 
+= 0.4.0 =
+* Fixed an issue where the plugin does not work when permalinks is activated. 
+
 == Upgrade Notice ==
 
 = 0.1.1 =
@@ -114,6 +117,9 @@ Alternatively, you can easily go to plugins on the admin panel and add the plugi
 
 = 0.3.2 =
 * Minor improvements here and there.
+
+= 0.4.0 =
+* Now works with permalinks activated. Sorry for the delay on the fix.
 
 
 

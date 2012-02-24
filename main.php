@@ -2,13 +2,13 @@
 /*
 Plugin Name: WP Academic People List
 Plugin URI: http://salehalsaffar.com/blog/?page_id=834 
-Description: Provides the ability to profile users academically and create categories of academic people. You also show Academic people list using shortcode. This is useful for school alumni and research group website.
-Version: 0.3.2
+Description: Provides the ability to profile users academically and create categories of academic people. This is useful for school alumni and research group websites.
+Version: 0.4.0
 Author: Saleh N. Alsaffar
 Author URI: http://salehalsaffar.com/
 License: GPL2
 */
-/*  Copyright YEAR  PLUGIN_AUTHOR_NAME  (email : saleh@salehalsaffar.com)
+/*  Copyright 2012  Saleh Alsaffar  (email : saleh@salehalsaffar.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License, version 2, as 

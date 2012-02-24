@@ -394,7 +394,7 @@ function wpapl_user_profile_page() {
 	}
 	
 	// Get WPAPL user data
-	$user_information = get_academic_user_info( $current_user->ID );
+	$user_information = wpapl_get_academic_user_info( $current_user->ID );
 	
 	// Fetch all people category
 	$all_categories = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpapl_category_table_name ORDER BY %s ASC", "category_name" ) );

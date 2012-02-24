@@ -2,9 +2,9 @@
 Contributors: Saleh_Coder, SalehCoder
 Donate link: 
 Tags: people, list, academic, alumni, research, university, college, school, plugin, wordpress, academic profile, profile, users
-Requires at least: 2.7
+Requires at least: 3.0
 Tested up to: 3.0
-Stable tag: 0.1.1
+Stable tag: 0.1.2
 
 Provides the ability to profile users academically and create categories of academic people. You can also show Academic people list using shortcode.
 
@@ -53,6 +53,10 @@ Alternatively, you can easily go to plugins on the admin panel and add the plugi
 = 0.1.1 =
 Fixed issue with viewing images.
 Added detailed page for each individual.
+
+= 0.1.2 =
+Fixed an issue where user was unable to edit his/her academic profile.
+
 
 
 

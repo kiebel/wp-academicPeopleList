@@ -36,12 +36,13 @@ function wpapl_get_academic_user_info( $userID ) {
 
 // Get current URL without the GEL parameters
 function wpapl_get_uri() {
-	$current_url = $_SERVER["REQUEST_URI"];
+	$current_url = $_SERVER["REQUEST_URI"]; 
 	$temp_url = explode( "&cat", $current_url );
 	$current_url = $temp_url[0];
 	$temp_url = explode( "&wpapl_id", $current_url );
 	$current_url = $temp_url[0];
 	
+		
 	return $current_url;
 }
 

@@ -785,8 +785,6 @@ function wpapl_admin_project_page() {
 			<textarea id="abstract" name="abstract" cols="60" rows="8"></textarea></li> 
 			<li><label for="description">Description: </label>
 			<textarea id="description" name="description" cols="60" rows="8"></textarea></li> 
-            <li><input type="hidden" name="type" value="add_project"  /></li>
-        	<li><input type="submit" name="submit_button" value="Add" class="button-secondary" /></li>
 			<li><label for="research_area_id">Research Area: </label>
             <select id="research_area_id" name="research_area_id"><?php
 			// We got all the IDs, now loop through them to get individual IDs
@@ -794,6 +792,8 @@ function wpapl_admin_project_page() {
 				?><option value="<?php echo $research_area->researchAreaID; ?>"><?php echo $research_area->title; ?></option><?php
 			}
 			?></select></li>
+            <li><input type="hidden" name="type" value="add_project"  /></li>
+        	<li><input type="submit" name="submit_button" value="Add" class="button-secondary" /></li>            
         </ul>
     </form>
     
@@ -878,6 +878,7 @@ function wpapl_admin_publication_page() {
                         <option value="journal" <?php if( $publication->type == 'journal' ) echo 'selected'; ?> >Journal</option>
                         <option value="conference" <?php if( $publication->type == 'conference' ) echo 'selected'; ?> >Conference</option>
                         <option value="thesis" <?php if( $publication->type == 'thesis' ) echo 'selected'; ?> >Thesis</option>
+                        <option value="thesis" <?php if( $publication->type == 'book' ) echo 'selected'; ?> >Book</option>                        
                     </select></li>                               
                     <li><label for="type_text">Description: </label>
                     <textarea id="type_text" name="type_text" cols="60" rows="8"><?php echo $publication->type_text; ?></textarea></li> 
@@ -976,6 +977,7 @@ function wpapl_admin_publication_page() {
 				<option value="journal">Journal</option>
 				<option value="conference">Conference</option>
 				<option value="thesis">Thesis</option>
+				<option value="book">Book</option>                
 			</select></li>                               
            	<li><label for="type_text">Description: </label>
 			<textarea id="type_text" name="type_text" cols="60" rows="8">For journal, write journal name. For conference, write the conference name, year &amp; location. For thesis, write the abstract.</textarea></li> 

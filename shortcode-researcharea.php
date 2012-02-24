@@ -33,21 +33,27 @@ function wpapl_shortcode_academic_reasearch_areas( $atts ) {
 			';
 		}
 		
+		$projects_html = '<div class="wpapl-research-area-project-list">
+				  <h5>Projects</h5>
+				  <ul>
+					 ' . $projects_html . '
+				  </ul>
+				</div>';
+		// remove the whole project text if there are no projects
+		if( count( $all_projects ) == 0 ) {
+			$projects_html = '';
+		}
+		
 		$html .= '<li><h4>' . $research_area->title . '</h4>
 			  
 				<div class="wpapl-research-area-description">
 					<p>' . $research_area->description . '</p>
 			  </div>
-				<div class="wpapl-research-area-project-list">
-				  <h5>Projects</h5>
-				  <ul>
-					 ' . $projects_html . '
-				  </ul>
-				</div>
+				' . $projects_html . '
 			</li>';
 	}
 	
-	$html .= '</div>	<br />';
+	$html .= '</div><br /><br />';
 	
 	return $html;
 }

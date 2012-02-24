@@ -4,7 +4,7 @@ Donate link:
 Tags: people, list, academic, alumni, research, university, college, school, plugin, wordpress, academic profile, profile, users
 Requires at least: 3.0
 Tested up to: 3.0.1
-Stable tag: 0.3.1
+Stable tag: 0.3.2
 
 Provides the ability to profile users academically and create categories of academic people. You can also show Academic people list using shortcode.
 
@@ -61,7 +61,7 @@ You can request additional features on this [plugin WordPress forum](http://word
 1. Upload the wp-academic-people folder to your /wp-content/plugins/ directory
 2. Activate the plugin using the Plugins menu in WordPress
 3. On the Admin panel, use the Academic People menu to adjust the plugin
-4. Adjust the WP->Twitter Options as you prefer. 
+4. Use any of the mentioned shortcodes.
 5. That's it! You're all set.
 
 Alternatively, you can easily go to plugins on the admin panel and add the plugin by searching the name. It will automatically download and install it.
@@ -89,6 +89,9 @@ Alternatively, you can easily go to plugins on the admin panel and add the plugi
 = 0.3.1 =
 * Minor change to fix issue with profile picture not showing.
 
+= 0.3.2 =
+* Minor improvements here and there.
+
 == Upgrade Notice ==
 
 = 0.1.1 =
@@ -108,6 +111,9 @@ Alternatively, you can easily go to plugins on the admin panel and add the plugi
 
 = 0.3.1 =
 * Compulsory update to fix issue with picture profile not showing.
+
+= 0.3.2 =
+* Minor improvements here and there.
 
 
 

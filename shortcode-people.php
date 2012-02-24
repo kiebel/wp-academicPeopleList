@@ -32,27 +32,44 @@ function wpapl_showAcademicDetail( $userID ) {
 			<div class="wpapl-category-heading"><p><a href="' . $category_uri . '">' . $user->category_name . '</a> &gt;&gt; </p></div>
 			<div class="wpapl-image"><img src="' . $photo->uri . '" width="' . $photo->width . '" height="' . $photo->height . '" /></div>
 			<div class="wpapl-mininum-information">
-			  <h4><span class="wpapl-person-name">' . $user->full_name . '</span></h4>
-			  <p><span class="wpapl-people-detail-tag">Job:</span> ' . $user->current_job . '<br />
-				<span class="wpapl-people-detail-tag">Website:</span> ' . $user->url . '<br />
-				<span class="wpapl-people-detail-tag">Email:</span> ' . $user->academic_email . '<br /><br /></p>
-				<span class="wpapl-people-detail-tag">Phone Number:</span> ' . $user->phone_number . '<br />
-				<span class="wpapl-people-detail-tag">Current Job:</span> ' . $user->current_job . '<br />';
-	if( !empty( $user->BS_field ) ) {
-		$html .= '<span class="wpapl-people-detail-tag">B.S. Degree:</span> ' . $user->BS_field . ', ' . $user->BS_institution . ', ' . $user->BS_year . '.<br />';
+			  <h4><span class="wpapl-person-name">' . $user->full_name . '</span></h4>';
+	$html .= '<p>';
+	
+	if( ! ( empty( $user->current_job ) ) ) {
+		$html .=  '<span class="wpapl-people-detail-tag">Job:</span> ' . $user->current_job . '<br />';
 	}
-	if( !empty( $user->MS_field ) ) {
-		$html .= '<span class="wpapl-people-detail-tag">M.S. Degree:</span> ' . $user->MS_field . ', ' . $user->MS_institution . ', ' . $user->MS_year . '.<br />';
+	if( ! ( empty( $user->url ) ) ) {
+		$html .=  '<span class="wpapl-people-detail-tag">Website:</span> ' . makeClickableLinks( $user->url ) . '<br />';
 	}
-	if( !empty( $user->PhD_field ) ) {
-		$html .= '<span class="wpapl-people-detail-tag">PhD Degree:</span> ' . $user->PhD_field . ', ' . $user->PhD_institution . ', ' . $user->PhD_year . '.<br />';
+	if( ! ( empty( $user->academic_email ) ) ) {
+		$html .=  '<span class="wpapl-people-detail-tag">Email:</span> ' . makeClickableLinks( $user->academic_email ) . '<br /><br />';
+	}	
+				
+	$html .= '</p>';
+	
+	if( ! ( empty( $user->phone_number ) ) ) {
+		$html .=  '<span class="wpapl-people-detail-tag">Phone Number:</span> ' . $user->phone_number . '<br /><br />';
+	}	
+				
+	if( ! ( empty( $user->BS_field ) && empty( $user->BS_institution ) && empty( $user->BS_year ) ) ) {
+		$html .= '<span class="wpapl-people-detail-tag">B.S. Degree:</span> ' . $user->BS_field . ', ' . $user->BS_institution . ', ' . $user->BS_year . '.<br /><br />';
+	}
+	if( ! ( empty( $user->MS_field ) && empty( $user->MS_institution ) && empty( $user->MS_year ) ) ) {
+		$html .= '<span class="wpapl-people-detail-tag">M.S. Degree:</span> ' . $user->MS_field . ', ' . $user->MS_institution . ', ' . $user->MS_year . '.<br /><br />';
+	}
+	if( ! ( empty( $user->PhD_field ) && empty( $user->PhD_institution ) && empty( $user->PhD_year ) ) ) {
+		$html .= '<span class="wpapl-people-detail-tag">PhD Degree:</span> ' . $user->PhD_field . ', ' . $user->PhD_institution . ', ' . $user->PhD_year . '.<br /><br />';
 	}
 				
-				
-	$html .= '			
-				<span class="wpapl-people-detail-tag">Address:</span> ' . $user->address . '<br />
-				<span class="wpapl-people-detail-tag">Bio:</span> ' . $user->bio . '<br />
-				<span class="wpapl-people-detail-tag">Category:</span> ' . $user->category_name . '<br />
+	if( ! ( empty( $user->address ) ) ) {
+		$html .=  '<span class="wpapl-people-detail-tag">Address:</span> ' . $user->address . '<br /><br />';
+	}
+	if( ! ( empty( $user->bio ) ) ) {
+		$html .=  '<span class="wpapl-people-detail-tag">Bio:</span> ' . $user->bio . '<br /><br />';
+	}	
+		
+	
+	$html .= '
 			</div>
 			<br /><br />
 		</div><br/>
@@ -114,8 +131,8 @@ function wpapl_people_list_single_user_html( $userID ) {
 			<div class="wpapl-mininum-information">
 			  <h4><span class="wpapl-person-name">' . $user->first_name . ' ' . $user->middle_initial . '. ' . $user->last_name . '</span></h4>
 			  <p><span class="wpapl-people-individual-tag">Job:</span> ' . $user->current_job . '<br />
-				<span class="wpapl-people-individual-tag">Website:</span> ' . $user->url . '<br />
-				<span class="wpapl-people-individual-tag">Email:</span> ' . $user->academic_email . '</p>
+				<span class="wpapl-people-individual-tag">Website:</span> ' . makeClickableLinks( $user->url ) . '<br />
+				<span class="wpapl-people-individual-tag">Email:</span> ' . makeClickableLinks( $user->academic_email ) . '</p>
 				<a href="' . wpapl_get_user_profile_uri( $user->userID ) . '">Details...</a>
 			</div>
 		</div><br/>
@@ -190,5 +207,12 @@ function wpapl_showPeople( $atts ) {
 	
 	return  $html;	
 }
+
+// Makes a text into clickable link. Source: http://www.totallyphp.co.uk/code/convert_links_into_clickable_hyperlinks.htm
+function makeClickableLinks($text) {    
+	$text = eregi_replace('(((f|ht){1}tp://)[-a-zA-Z0-9@:%_\+.~#?&//=]+)',     '<a href="\\1">\\1</a>', $text);   
+	$text = eregi_replace('([[:space:]()[{}])(www.[-a-zA-Z0-9@:%_\+.~#?&//=]+)',     '\\1<a href="http://\\2">\\2</a>', $text);   
+	$text = eregi_replace('([_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,3})',     '<a href="mailto:\\1">\\1</a>', $text);    
+	return $text;  }  
 
 ?>

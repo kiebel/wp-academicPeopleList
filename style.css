@@ -1,0 +1,32 @@
+.wpa label {    
+	float: left;    
+	width: 17em;    
+	margin-right: 1em;  
+}
+
+.wpapl-person .wpapl-image {
+	float: left;
+	padding-right: 5px;
+}
+.wpapl-person .wpapl-mininum-information {
+	
+}
+
+#wpapl-category-list-navmenu {
+	
+}
+
+
+#wpapl-category-list-navmenu ul {
+	list-style-type:none; 
+	padding:5px 0 5px 0;
+	border-top:1px solid #E0E0E0;
+	border-bottom:1px solid #E0E0E0;
+	margin:10px 0;
+ }
+#wpapl-category-list-navmenu li {
+	display: inline;
+	margin:0 10px; 
+}
+
+	

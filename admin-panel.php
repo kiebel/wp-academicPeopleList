@@ -893,7 +893,7 @@ function wpapl_admin_publication_page() {
 	
 	// If POST for submitting an edition
 	if( isset( $_POST['type'] ) && $_POST['type'] == 'submit_edit' ) {
-		$result = $wpdb->query( $wpdb->prepare( "UPDATE $wpapl_publication_table_name SET title = %s, publish_year = %s, other_author = %s, type = %s, type_text = %s, pdf_url = %s WHERE publicationID = %d", $_POST['publication_title'], $_POST['publish_year'], $_POST['other_author'], $_POST['pdf_url'], $_POST['pub_type'], $_POST['type_text'], $_POST['pdf_url'], $_POST['publicationID'] ) );
+		$result = $wpdb->query( $wpdb->prepare( "UPDATE $wpapl_publication_table_name SET title = %s, publish_year = %s, other_authors = %s, type = %s, type_text = %s, pdf_url = %s WHERE publicationID = %d", $_POST['publication_title'], $_POST['publish_year'], $_POST['other_author'], $_POST['pub_type'], $_POST['type_text'], $_POST['pdf_url'], $_POST['publicationID'] ) );
 		if($result) {
 			?>
 			<div class="updated"><p>Publication <?php echo $_POST['publication_title']; ?> has been modified.</p></div>
